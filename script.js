@@ -410,3 +410,38 @@ document.addEventListener('DOMContentLoaded', function() {
     // Добавьте эту строку
     initGallery();
 });
+
+
+// Аудиоплеер
+const audio = document.getElementById('weddingAudio');
+const playBtn = document.getElementById('playPauseBtn');
+const playIcon = document.querySelector('.play-icon');
+const pauseIcon = document.querySelector('.pause-icon');
+
+if (audio && playBtn) {
+    // Автозапуск с учетом политик браузера
+    const tryAutoplay = () => {
+        audio.play().then(() => {
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+        }).catch(() => {
+            console.log('Автовоспроизведение заблокировано. Нажмите кнопку.');
+        });
+    };
+    
+    // Пытаемся запустить автоматически
+    tryAutoplay();
+    
+    // Обработчик кнопки
+    playBtn.addEventListener('click', () => {
+        if (audio.paused) {
+            audio.play();
+            playIcon.style.display = 'none';
+            pauseIcon.style.display = 'block';
+        } else {
+            audio.pause();
+            playIcon.style.display = 'block';
+            pauseIcon.style.display = 'none';
+        }
+    });
+}
