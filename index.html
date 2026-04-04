@@ -14,12 +14,31 @@
 </head>
 <body>
     <section class="hero">
-        <img src="hero2.jpg" alt="Фон свадьбы" class="hero-background">
+        <img src="hero3.jpg" alt="Фон свадьбы" class="hero-background">
         <div class="hero-overlay"></div>
         
         <div class="hero-names">
             <h1>Вадим <span class="amp">&</span> Альбина</h1>
         </div>
+
+        <!-- Аудиоплеер -->
+<div class="music-player">
+    <audio id="weddingAudio" loop preload="auto">
+        <source src="1.mp3" type="audio/mpeg">
+        Ваш браузер не поддерживает аудио.
+    </audio>
+    <div class="player-wrapper">
+        <button class="play-pause-btn" id="playPauseBtn">
+            <svg class="play-icon" viewBox="0 0 24 24" width="24" height="24">
+                <path fill="white" d="M8 5v14l11-7z"/>
+            </svg>
+            <svg class="pause-icon" viewBox="0 0 24 24" width="24" height="24" style="display: none;">
+                <path fill="white" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+            </svg>
+        </button>
+        <span class="music-hint">Пожалуйста, включите музыку</span>
+    </div>
+</div>
 
         <div class="ticker-container">
             <div class="ticker-content" id="tickerText">приглашение на свадьбу</div>
@@ -76,8 +95,9 @@
             <div class="location-block full-width" style="background-image: url('fon3.png');">
             <div class="location-content">
                     <h3 class="location-title">Локация</h3>
-                    <p class="location-text">ЗАГС - Гагарина 28;</p>
-                    <p class="location-text">Банкетный зал : “Ностальжи”  Оливковый зал; Челябинская область , город Троицк , ул. Гагарина, 98</p>
+                    <p class="location-text">ЗАГС - Челябинская область, город Троицк, ул. Гагарина 28;</p>
+                    <p class="location-text">Банкетный зал : “Ностальжи”  Оливковый зал; Челябинская область, город Троицк, ул. Гагарина, 98</p>
+                    <p class="location-text">Кто хочет присоеденится к фотосессии, ждем Вас к 12:30 по адресу Челябинская область, город Троицк, ул. Климова, 9</p>
                 </div>
             </div>
 
@@ -111,6 +131,8 @@
                         <span class="event-time">11:30</span>
                     </div>
                 </div>
+
+                
                 
                 <!-- Элемент 2: Фуршет -->
                 <div class="timeline-item">
@@ -175,8 +197,8 @@
     <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 20px 0;">
         <div style="width: 55px; height: 55px; background-color: #5a4937; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"></div>
         <div style="width: 55px; height: 55px; background-color: #846b57; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"></div>
-        <div style="width: 55px; height: 55px; background-color: #d8ccb4; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"></div>
-        <div style="width: 55px; height: 55px; background-color: #e1d3ca; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"></div>
+        <div style="width: 55px; height: 55px; background-color: #e5c2be; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"></div>
+        <div style="width: 55px; height: 55px; background-color: #da9f9b; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"></div>
         <div style="width: 55px; height: 55px; background-color: #aebea4; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"></div>
         <div style="width: 55px; height: 55px; background-color: #5f6946; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.15);"></div>
     </div>
