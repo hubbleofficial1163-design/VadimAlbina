@@ -69,7 +69,7 @@ html, body {
     font-smoothing: antialiased;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: blanchedalmond;
+    /* color: blanchedalmond; */
     font-size: clamp(3.5rem, 15vw, 7rem);
     line-height: 1.1;
 }
@@ -1676,4 +1676,74 @@ button,
 section, footer {
     margin-left: 0;
     margin-right: 0;
+}
+
+
+/* Аудиоплеер в hero секции */
+.music-player {
+    position: relative;
+    z-index: 3;
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+}
+
+.player-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.play-pause-btn {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.play-pause-btn:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.05);
+}
+
+.play-pause-btn:active {
+    transform: scale(0.95);
+}
+
+.play-icon, .pause-icon {
+    width: 28px;
+    height: 28px;
+}
+
+.music-hint {
+    font-family: 'Caveat', cursive;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.85);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+    .play-pause-btn {
+        width: 45px;
+        height: 45px;
+    }
+    .play-icon, .pause-icon {
+        width: 24px;
+        height: 24px;
+    }
+    .music-hint {
+        font-size: 1.4rem;
+        white-space: nowrap;
+    }
 }
