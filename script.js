@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const containerWidth = container.offsetWidth;
         
-        // Создаем временный элемент для измерения ширины текста
         const temp = document.createElement('span');
         temp.style.visibility = 'hidden';
         temp.style.position = 'absolute';
@@ -28,10 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const textWidth = temp.offsetWidth;
         document.body.removeChild(temp);
         
-        // Рассчитываем сколько раз нужно повторить текст
         const repeatsNeeded = Math.max(3, Math.ceil((containerWidth * 2) / textWidth) + 1);
         
-        // Создаем финальный текст
         let fullText = '';
         for (let i = 0; i < repeatsNeeded; i++) {
             fullText += baseText;
@@ -40,7 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
         tickerElement.textContent = fullText;
     }
     
-    // Добавляем ключевые кадры если их нет
     if (!document.querySelector('#ticker-styles')) {
         const style = document.createElement('style');
         style.id = 'ticker-styles';
@@ -53,22 +49,18 @@ document.addEventListener('DOMContentLoaded', function() {
         document.head.appendChild(style);
     }
     
-    // Инициализация
     updateTicker();
     
-    // Обновляем при изменении размера окна
     let resizeTimeout;
     window.addEventListener('resize', function() {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(updateTicker, 100);
     });
     
-    // Обновляем при повороте экрана
     window.addEventListener('orientationchange', function() {
         setTimeout(updateTicker, 150);
     });
     
-    // Проверяем видимость имен на разных экранах
     console.log('Hero секция загружена. Проверьте отображение имен на вашем устройстве.');
     
     // Инициализация обработчика формы
@@ -77,15 +69,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Таймер обратного отсчета до свадьбы
 function weddingTimer() {
-    // Установите дату свадьбы (год, месяц-1, день, часы, минуты)
-    const weddingDate = new Date(2026, 7, 8, 15, 0); // 2 июля 2026, 15:00
+    const weddingDate = new Date(2026, 7, 8, 15, 0); // 8 августа 2026, 15:00
     
     function updateTimer() {
         const now = new Date().getTime();
         const distance = weddingDate - now;
         
         if (distance < 0) {
-            // Если дата уже прошла
             document.getElementById('days').textContent = '00';
             document.getElementById('hours').textContent = '00';
             document.getElementById('minutes').textContent = '00';
@@ -93,45 +83,47 @@ function weddingTimer() {
             return;
         }
         
-        // Расчет дней, часов, минут и секунд
         const days = Math.floor(distance / (1000 * 60 * 60 * 24));
         const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((distance % (1000 * 60)) / 1000);
         
-        // Обновление DOM с добавлением ведущего нуля
         document.getElementById('days').textContent = days < 10 ? '0' + days : days;
         document.getElementById('hours').textContent = hours < 10 ? '0' + hours : hours;
         document.getElementById('minutes').textContent = minutes < 10 ? '0' + minutes : minutes;
         document.getElementById('seconds').textContent = seconds < 10 ? '0' + seconds : seconds;
     }
     
-    // Обновляем каждую секунду
     updateTimer();
     setInterval(updateTimer, 1000);
 }
 
 // Функция для отправки данных в Google Sheets
 async function submitFormToGoogleSheets(formData) {
-    // TODO: Замените этот URL на ваш URL веб-приложения Google Apps Script
-    const scriptURL = 'https://script.google.com/macros/s/AKn05cH3jUm7pnmrN9th1hg8INMsMAH3HUcYlIx5_DeQNgWe-JIqDDam9f7C/exec';
+    // ВАШ URL ОТ APPS SCRIPT - ЗАМЕНИТЕ НА РЕАЛЬНЫЙ
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbz6cB2JR9tYut8-D4N-YleLqswUimAQHOPj5L8kvhR4cOOfoiugptEHv4TKK3NJ2Tff/exec';
     
     try {
-        const formDataToSend = new FormData();
-        
-        // Добавляем все данные формы
+        const formDataToSend = new URLSearchParams();
         formDataToSend.append('name', formData.name || '');
         formDataToSend.append('attendance', formData.attendance || '');
-        formDataToSend.append('alcohol', formData.alcohol || '');
+        
+        if (formData.alcohol && formData.alcohol.length > 0) {
+            for (const pref of formData.alcohol) {
+                formDataToSend.append('alcohol', pref);
+            }
+        }
         
         const response = await fetch(scriptURL, {
             method: 'POST',
-            mode: 'no-cors', // Важно для Google Apps Script
-            body: formDataToSend
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: formDataToSend.toString()
         });
         
-        // При no-cors мы не можем прочитать ответ
-        return { success: true };
+        const result = await response.json();
+        return { success: result.result === 'success', message: result.message };
         
     } catch (error) {
         console.error('Ошибка при отправке:', error);
@@ -141,39 +133,73 @@ async function submitFormToGoogleSheets(formData) {
 
 // Функция для сбора данных из формы
 function collectFormData(form) {
-    // Получаем имя
     const nameInput = form.querySelector('#name');
     const name = nameInput ? nameInput.value.trim() : '';
     
-    // Получаем значение радио-кнопок (присутствие)
     const attendanceRadio = form.querySelector('input[name="attendance"]:checked');
     const attendance = attendanceRadio ? attendanceRadio.value : '';
     
-    // Получаем выбранные чекбоксы алкоголя
     const alcoholCheckboxes = form.querySelectorAll('input[name="alcohol"]:checked');
     const alcoholValues = Array.from(alcoholCheckboxes).map(cb => cb.value);
-    const alcohol = alcoholValues.join(', ');
     
     return {
         name: name,
         attendance: attendance,
-        alcohol: alcohol
+        alcohol: alcoholValues
     };
 }
 
 // Функция валидации формы
 function validateForm(formData) {
     if (!formData.name) {
-        alert('Пожалуйста, введите ваше имя');
+        showNotification('Пожалуйста, введите ваше имя', true);
         return false;
     }
     
     if (!formData.attendance) {
-        alert('Пожалуйста, укажите, сможете ли вы присутствовать');
+        showNotification('Пожалуйста, укажите, сможете ли вы присутствовать', true);
         return false;
     }
     
     return true;
+}
+
+// Функция для отображения уведомлений
+function showNotification(message, isError = false) {
+    let notification = document.getElementById('form-notification');
+    if (!notification) {
+        notification = document.createElement('div');
+        notification.id = 'form-notification';
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-family: 'Caveat', cursive;
+            font-size: 18px;
+            font-weight: 500;
+            z-index: 9999;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            transition: opacity 0.3s ease;
+        `;
+        document.body.appendChild(notification);
+    }
+    
+    notification.style.backgroundColor = isError ? '#f44336' : '#4CAF50';
+    notification.style.color = 'white';
+    notification.textContent = message;
+    notification.style.display = 'block';
+    notification.style.opacity = '1';
+    
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 300);
+    }, 4000);
 }
 
 // Функция для очистки формы
@@ -183,7 +209,6 @@ function resetForm(form) {
 
 // Функция для отображения сообщения об успехе
 function showSuccessMessage(guestName) {
-    // Создаем элемент для сообщения
     const messageDiv = document.createElement('div');
     messageDiv.className = 'success-message';
     messageDiv.innerHTML = `
@@ -197,7 +222,6 @@ function showSuccessMessage(guestName) {
         </div>
     `;
     
-    // Добавляем стили для сообщения
     const style = document.createElement('style');
     style.textContent = `
         .success-message {
@@ -268,17 +292,11 @@ function showSuccessMessage(guestName) {
     document.head.appendChild(style);
     document.body.appendChild(messageDiv);
     
-    // Автоматическое закрытие через 5 секунд
     setTimeout(() => {
         if (messageDiv.parentNode) {
             messageDiv.remove();
         }
     }, 5000);
-}
-
-// Функция для отображения сообщения об ошибке
-function showErrorMessage() {
-    alert('Произошла ошибка при отправке. Пожалуйста, попробуйте позже или свяжитесь с организатором.');
 }
 
 // Основной обработчик формы
@@ -289,36 +307,33 @@ function initFormHandler() {
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
-        // Получаем кнопку отправки
         const submitBtn = form.querySelector('.submit-btn');
         const originalText = submitBtn.textContent;
         
-        // Собираем и валидируем данные
         const formData = collectFormData(form);
         
         if (!validateForm(formData)) {
             return;
         }
         
-        // Блокируем кнопку и показываем загрузку
         submitBtn.disabled = true;
         submitBtn.textContent = 'Отправка...';
+        showNotification('Отправляем ваш ответ...', false);
         
         try {
-            // Отправляем данные
-            await submitFormToGoogleSheets(formData);
+            const result = await submitFormToGoogleSheets(formData);
             
-            // Показываем сообщение об успехе
-            showSuccessMessage(formData.name || 'Гость');
-            
-            // Очищаем форму
-            resetForm(form);
-            
+            if (result.success) {
+                showNotification('✅ Спасибо! Ваш ответ сохранен.', false);
+                showSuccessMessage(formData.name);
+                resetForm(form);
+            } else {
+                showNotification('❌ Ошибка: ' + result.message, true);
+            }
         } catch (error) {
             console.error('Ошибка:', error);
-            showErrorMessage();
+            showNotification('❌ Ошибка отправки. Попробуйте еще раз.', true);
         } finally {
-            // Разблокируем кнопку
             submitBtn.disabled = false;
             submitBtn.textContent = originalText;
         }
@@ -335,16 +350,14 @@ function initSimpleGallery() {
     if (!track || !nextBtn) return;
     
     let currentIndex = 0;
-    const totalSlides = 2; // У нас 2 фото
+    const totalSlides = 2;
     
     nextBtn.addEventListener('click', () => {
-        // Переключаемся на следующее фото (по кругу)
         currentIndex = (currentIndex + 1) % totalSlides;
         track.style.transform = `translateX(-${currentIndex * 100}%)`;
     });
 }
 
-// Галерея для дресс-кода с двумя стрелками
 function initGallery() {
     const track = document.getElementById('galleryTrack');
     const prevBtn = document.getElementById('galleryPrev');
@@ -353,27 +366,23 @@ function initGallery() {
     if (!track || !prevBtn || !nextBtn) return;
     
     let currentIndex = 0;
-    const totalSlides = 2; // У нас 2 фото
+    const totalSlides = 2;
     
-    // Функция обновления позиции
     function updateGallery(index) {
         currentIndex = index;
         track.style.transform = `translateX(-${currentIndex * 100}%)`;
     }
     
-    // Обработчик для стрелки вправо
     nextBtn.addEventListener('click', () => {
         currentIndex = (currentIndex + 1) % totalSlides;
         updateGallery(currentIndex);
     });
     
-    // Обработчик для стрелки влево
     prevBtn.addEventListener('click', () => {
         currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
         updateGallery(currentIndex);
     });
     
-    // Поддержка свайпов для мобильных устройств
     let touchStartX = 0;
     let touchEndX = 0;
     
@@ -383,34 +392,23 @@ function initGallery() {
     
     track.addEventListener('touchend', (e) => {
         touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
-    }, { passive: true });
-    
-    function handleSwipe() {
         const swipeThreshold = 50;
         const diff = touchStartX - touchEndX;
         
         if (Math.abs(diff) > swipeThreshold) {
             if (diff > 0) {
-                // Свайп влево - следующее фото
                 currentIndex = (currentIndex + 1) % totalSlides;
             } else {
-                // Свайп вправо - предыдущее фото
                 currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
             }
             updateGallery(currentIndex);
         }
-    }
+    }, { passive: true });
 }
 
-// Инициализируем галерею после загрузки страницы
 document.addEventListener('DOMContentLoaded', function() {
-    // ... существующий код ...
-    
-    // Добавьте эту строку
     initGallery();
 });
-
 
 // Аудиоплеер
 const audio = document.getElementById('weddingAudio');
@@ -419,7 +417,6 @@ const playIcon = document.querySelector('.play-icon');
 const pauseIcon = document.querySelector('.pause-icon');
 
 if (audio && playBtn) {
-    // Автозапуск с учетом политик браузера
     const tryAutoplay = () => {
         audio.play().then(() => {
             playIcon.style.display = 'none';
@@ -429,10 +426,8 @@ if (audio && playBtn) {
         });
     };
     
-    // Пытаемся запустить автоматически
     tryAutoplay();
     
-    // Обработчик кнопки
     playBtn.addEventListener('click', () => {
         if (audio.paused) {
             audio.play();
