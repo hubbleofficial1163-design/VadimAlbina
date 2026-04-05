@@ -101,7 +101,7 @@ function weddingTimer() {
 // Функция для отправки данных в Google Sheets
 async function submitFormToGoogleSheets(formData) {
     // ВАШ URL ОТ APPS SCRIPT - ЗАМЕНИТЕ НА РЕАЛЬНЫЙ
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbz6cB2JR9tYut8-D4N-YleLqswUimAQHOPj5L8kvhR4cOOfoiugptEHv4TKK3NJ2Tff/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwdJIslA8ZQWg6ddn-JJSLP_uVS5y1TxFiZFsR_CcQGigfoMxfyN29VMmDLSBrVQyaF/exec';
     
     try {
         const formDataToSend = new URLSearchParams();
